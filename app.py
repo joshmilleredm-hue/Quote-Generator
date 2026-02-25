@@ -45,7 +45,7 @@ if submitted:
     try:
         doc = Document(temp_path)
         
-       # This list adds exactly 12 spaces before the OT/Sunday rates for alignment
+       # Cleaned up alignment logic to prevent "double spacing" or misaligned lines
         replaces = {
             "[Date]": q_date.strftime("%B %d, %Y"),
             "[Company Name]": c_name,
@@ -65,12 +65,17 @@ if submitted:
             "[75 Ton]": tonnage,
             "[80 Ton]": tonnage,
             "$000.00 Per Hour": f"${price_info['rate']:.2f} Per Hour",
-            
-            # THE 12-SPACE ALIGNMENT FIX:
-            "$45.00 Per Hour": f"{' ' * 12}${price_info['ot']:.2f} Per Hour",
-            "$90.00 Per Hour": f"{' ' * 12}${price_info['sun']:.2f} Per Hour" if not is_heavy else f"{' ' * 12}${price_info['ot']:.2f} Per Hour",
-            "$180.00 Per Hour": f"{' ' * 12}${price_info['sun']:.2f} Per Hour",
         }
+
+        # Handle Overtime & Sunday lines separately based on which template is active
+        if is_heavy:
+            # Logic for 80 Ton and Above
+            replaces["$90.00 Per Hour"] = f"{' ' * 12}${price_info['ot']:.2f} Per Hour"
+            replaces["$180.00 Per Hour"] = f"{' ' * 12}${price_info['sun']:.2f} Per Hour"
+        else:
+            # Logic for 75 Ton and Below
+            replaces["$45.00 Per Hour"] = f"{' ' * 12}${price_info['ot']:.2f} Per Hour"
+            replaces["$90.00 Per Hour"] = f"{' ' * 12}${price_info['sun']:.2f} Per Hour"
 
         # IMPROVED SEARCH: Checks every paragraph and every table cell
         def apply_replacements(container):
