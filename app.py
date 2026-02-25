@@ -45,7 +45,7 @@ if submitted:
     try:
         doc = Document(temp_path)
         
-        # This list covers every bracket used in both your templates
+       # This list adds exactly 12 spaces before the OT/Sunday rates for alignment
         replaces = {
             "[Date]": q_date.strftime("%B %d, %Y"),
             "[Company Name]": c_name,
@@ -65,9 +65,11 @@ if submitted:
             "[75 Ton]": tonnage,
             "[80 Ton]": tonnage,
             "$000.00 Per Hour": f"${price_info['rate']:.2f} Per Hour",
-            "$45.00 Per Hour": f"${price_info['ot']:.2f} Per Hour",
-            "$90.00 Per Hour": f"${price_info['sun']:.2f} Per Hour" if not is_heavy else f"${price_info['ot']:.2f} Per Hour",
-            "$180.00 Per Hour": f"${price_info['sun']:.2f} Per Hour",
+            
+            # THE 12-SPACE ALIGNMENT FIX:
+            "$45.00 Per Hour": f"{' ' * 12}${price_info['ot']:.2f} Per Hour",
+            "$90.00 Per Hour": f"{' ' * 12}${price_info['sun']:.2f} Per Hour" if not is_heavy else f"{' ' * 12}${price_info['ot']:.2f} Per Hour",
+            "$180.00 Per Hour": f"{' ' * 12}${price_info['sun']:.2f} Per Hour",
         }
 
         # IMPROVED SEARCH: Checks every paragraph and every table cell
