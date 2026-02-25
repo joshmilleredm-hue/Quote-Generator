@@ -98,6 +98,6 @@ if submitted:
         output = BytesIO()
         doc.save(output)
         st.success("Quote Ready!")
-        st.download_button("⬇️ Download .docx Quote", output.getvalue(), f"Quote_{c_name}.docx")
+        st.download_button("⬇️ Download .docx Quote", output.getvalue(), f"{tonnage} - {p_name}.docx")
     except Exception as e:
         st.error(f"Error: {e}")
