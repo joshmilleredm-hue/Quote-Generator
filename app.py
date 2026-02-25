@@ -45,7 +45,7 @@ if submitted:
     try:
         doc = Document(temp_path)
         
-        # All potential placeholders from both templates
+        # This list covers every bracket used in both your templates
         replaces = {
             "[Date]": q_date.strftime("%B %d, %Y"),
             "[Company Name]": c_name,
@@ -70,16 +70,28 @@ if submitted:
             "$180.00 Per Hour": f"${price_info['sun']:.2f} Per Hour",
         }
 
-        # Custom logic for Mobilization In/Out placeholders
-        for p in doc.paragraphs:
-            for k, v in replaces.items():
-                if k in p.text:
-                    p.text = p.text.replace(k, v)
-            # Handle the specific Mobilization rows in 80+ ton template
-            if "Mobilization In" in p.text:
-                p.text = p.text.replace("$000.00", f"${price_info['in']:,.2f}")
-            if "Mobilization Out" in p.text:
-                p.text = p.text.replace("$000.00", f"${price_info['out']:,.2f}")
+        # IMPROVED SEARCH: Checks every paragraph and every table cell
+        def apply_replacements(container):
+            for item in container:
+                for key, value in replaces.items():
+                    if key in item.text:
+                        # This clears the weird hidden Word formatting and forces the text in
+                        item.text = item.text.replace(key, value)
+                
+                # Special logic for Mobilization fees in the 80+ ton template
+                if is_heavy:
+                    if "Mobilization In" in item.text:
+                        item.text = item.text.replace("$000.00", f"${price_info['in']:,.2f}")
+                    if "Mobilization Out" in item.text:
+                        item.text = item.text.replace("$000.00", f"${price_info['out']:,.2f}")
+
+        # Run the fix on the main text
+        apply_replacements(doc.paragraphs)
+        
+        # Run the fix on any tables (some templates put addresses in tables)
+        for table in doc.tables:
+            for row in table.rows:
+                apply_replacements(row.cells)
 
         output = BytesIO()
         doc.save(output)
