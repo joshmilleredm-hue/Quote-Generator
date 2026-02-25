@@ -17,7 +17,7 @@ CRANE_DATA = {
     "250 Ton A/T": {"rate": 525.00, "ot": 90.00, "sun": 180.00, "in": 4500.00, "out": 4500.00},
 }
 
-st.title("🏗️ Quote Generator")
+st.markdown("<h1 style='text-align: center;'>🏗️ Quote Generator</h1>", unsafe_allow_html=True)
 
 with st.form("quote_input"):
     tonnage = st.selectbox("Crane Tonnage", list(CRANE_DATA.keys()))
