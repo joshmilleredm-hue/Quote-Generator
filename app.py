@@ -40,7 +40,7 @@ if submitted:
     is_heavy = price_info["in"] > 0
     
     # Choose Template based on tonnage
-    temp_path = "80 TON AND ABOVE QUOTE TEMPLATE.doc" if is_heavy else "75 TON AND BELOW QUOTE TEMPLATE.doc"
+    temp_path = "80 TON AND ABOVE QUOTE TEMPLATE.docx" if is_heavy else "75 TON AND BELOW QUOTE TEMPLATE.docx"
     
     try:
         doc = Document(temp_path)
@@ -84,6 +84,6 @@ if submitted:
         output = BytesIO()
         doc.save(output)
         st.success("Quote Ready!")
-        st.download_button("⬇️ Download .doc Quote", output.getvalue(), f"Quote_{c_name}.doc")
+        st.download_button("⬇️ Download .docx Quote", output.getvalue(), f"Quote_{c_name}.docx")
     except Exception as e:
         st.error(f"Error: {e}")
